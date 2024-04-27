@@ -1,0 +1,18 @@
+define fib [
+  # Taking one input, returning one output
+  dup 0 ==
+  [ 1 ]
+  [ dup 1 - fib
+    swap 2 - fib
+    +
+  ]
+  if
+]
+
+# So I guess the question is how the definitions should work
+# Do I allow the define to define arbitrary constants, or only functions?
+# Maybe it makes sense to limit it to funtions at the moment. In which case,
+# I might actually prefer special syntax for the function definitions,
+# compared to anonymous blocks. Or maybe it does not actually matter that
+# much, it's not like the types of brackets have only one kind of usage in
+# other programming languages.

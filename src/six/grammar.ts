@@ -34,7 +34,13 @@ interface NumberValue {
   value: number;
 }
 
-type Value = NumberValue;
+interface FnPointerValue {
+  kind: 'fnPointer';
+  blockId: number;
+  instrId: number;
+}
+
+type Value = NumberValue | FnPointerValue;
 
 interface FnPointerInstr {
   kind: 'fnPointer';
@@ -76,8 +82,27 @@ class Compiler {
   }
 }
 
+interface CodePointer {
+  blockId: number;
+  instrId: number;
+}
+
 interface VmState {
+  code: Instr[][];
   dataStack: Value[];
+  ip: CodePointer;
+  flowStack: CodePointer[];
+}
+
+function initState(program: Program): VmState {
+  const compiler = new Compiler();
+  const startBlock = compiler.compileToNewBlock(program);
+  return {
+    code: compiler.code,
+    dataStack: [],
+    ip: { blockId: startBlock, instrId: 0 },
+    flowStack: []
+  }
 }
 
 class SixthError extends Error {
@@ -110,6 +135,10 @@ function pushNumber(state: VmState, value: number) {
   pushValue(state, { kind: 'number', value });
 }
 
+function pushFnPointer(state: VmState, blockId: number) {
+  pushValue(state, { kind: 'fnPointer', blockId, instrId: 0 });
+}
+
 const primitiveHandlers: Record<string, (state: VmState) => void> = {
   '+'(state) {
     const x = popNumber(state);
@@ -128,30 +157,51 @@ const example1: Program = [
   call('+')
 ];
 
-function evalProgram(program: Program, state: VmState) {
-  for (const expr of program) {
-    switch (expr.kind) {
-      case 'const': {
-        pushNumber(state, expr.value);
-        break;
-      }
-      case 'call': {
-        const handler = primitiveHandlers[expr.name];
-        if (handler === undefined) {
-          throw new SixthError(`Unknown function ${expr.name}`);
-        }
-        handler(state);
-        break;
-      }
+// Returns false if there are no further steps to be made
+function stepProgram(state: VmState): boolean {
+  const currBlock = state.code[state.ip.blockId];
+  if (state.ip.instrId >= currBlock.length) {
+    const newIp = state.flowStack.pop();
+    if (newIp === undefined) {
+      return false;
     }
+    state.ip = newIp;
+    return true;
+  }
+
+  const instr = currBlock[state.ip.instrId];
+  switch (instr.kind) {
+    case 'const': {
+      pushNumber(state, instr.value);
+      break;
+    }
+    case 'call': {
+      const handler = primitiveHandlers[instr.name];
+      if (handler === undefined) {
+        throw new SixthError(`Unknown function ${instr.name}`);
+      }
+      handler(state);
+      break;
+    }
+    case 'fnPointer': {
+      pushFnPointer(state, instr.value);
+      break;
+    }
+  }
+
+  state.ip.instrId++;
+  return true;
+}
+
+function evalLoop(state: VmState) {
+  while (stepProgram(state)) {
+    // Do nothing extra
   }
 }
 
 function evalEmpty(program: Program): VmState {
-  const state: VmState = {
-    dataStack: []
-  };
-  evalProgram(program, state);
+  const state = initState(program);
+  evalLoop(state);
   return state;
 }
 

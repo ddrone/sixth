@@ -35,7 +35,7 @@ interface VmState {
   dataStack: Value[];
 }
 
-class EvalError extends Error {
+class SixthError extends Error {
   constructor(message: string) {
     super(message);
   }
@@ -44,7 +44,7 @@ class EvalError extends Error {
 function popValue(state: VmState): Value {
   const result = state.dataStack.pop();
   if (result === undefined) {
-    throw new EvalError('Stack underflow!');
+    throw new SixthError('Stack underflow!');
   }
   return result;
 }
@@ -56,7 +56,7 @@ function pushValue(state: VmState, value: Value) {
 function popNumber(state: VmState): number {
   const result = popValue(state);
   if (result.kind !== 'number') {
-    throw new EvalError(`Expected number, got ${result.kind}`)!
+    throw new SixthError(`Expected number, got ${result.kind}`)!
   }
   return result.value;
 }
@@ -93,7 +93,7 @@ function evalProgram(program: Program, state: VmState) {
       case 'call': {
         const handler = primitiveHandlers[expr.name];
         if (handler === undefined) {
-          throw new EvalError(`Unknown function ${expr.name}`);
+          throw new SixthError(`Unknown function ${expr.name}`);
         }
         handler(state);
         break;

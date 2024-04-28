@@ -8,7 +8,12 @@ interface CallExpr {
   name: string;
 }
 
-type Expr = ConstExpr | CallExpr;
+interface BlockExpr {
+  kind: 'block';
+  contents: Expr[];
+}
+
+type Expr = ConstExpr | CallExpr | BlockExpr;
 
 function constExpr(n: number): Expr {
   return {
@@ -30,6 +35,46 @@ interface NumberValue {
 }
 
 type Value = NumberValue;
+
+interface FnPointerInstr {
+  kind: 'fnPointer';
+  value: number;
+}
+
+type Instr = ConstExpr | CallExpr | FnPointerInstr;
+
+class Compiler {
+  code: Instr[][] = [];
+  nextBlock: number = 0;
+
+  compileToNewBlock(exprs: Expr[]): number {
+    const result = this.nextBlock++;
+    const newBlock: Instr[] = [];
+    this.code.push(newBlock);
+
+    for (const expr of exprs) {
+      newBlock.push(this.compileExpr(expr));
+    }
+
+    return result;
+  }
+
+  compileExpr(expr: Expr): Instr {
+    switch (expr.kind) {
+      case 'const':
+        return expr;
+      case 'call':
+        return expr;
+      case 'block': {
+        const blockId = this.compileToNewBlock(expr.contents);
+        return {
+          kind: 'fnPointer',
+          value: blockId
+        }
+      }
+    }
+  }
+}
 
 interface VmState {
   dataStack: Value[];

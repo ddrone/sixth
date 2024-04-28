@@ -66,9 +66,22 @@ function pushNumber(state: VmState, value: number) {
 }
 
 const primitiveHandlers: Record<string, (state: VmState) => void> = {
+  '+'(state) {
+    const x = popNumber(state);
+    const y = popNumber(state);
+    pushNumber(state, x + y);
+  }
 };
 
 type Program = Expr[];
+
+const example1: Program = [
+  constExpr(3),
+  constExpr(4),
+  constExpr(5),
+  call('+'),
+  call('+')
+];
 
 function evalProgram(program: Program, state: VmState) {
   for (const expr of program) {
@@ -88,3 +101,13 @@ function evalProgram(program: Program, state: VmState) {
     }
   }
 }
+
+function evalEmpty(program: Program): VmState {
+  const state: VmState = {
+    dataStack: []
+  };
+  evalProgram(program, state);
+  return state;
+}
+
+console.log(evalEmpty(example1));

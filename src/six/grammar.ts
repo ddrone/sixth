@@ -115,7 +115,7 @@ interface VmState {
 
 function initState(program: Program): VmState {
   const compiler = new Compiler();
-  const startBlock = compiler.compileToNewBlock(program);
+  const startBlock = compiler.compileToNewBlock(program.mainCode);
   return {
     code: compiler.code,
     dataStack: [],
@@ -212,21 +212,25 @@ const primitiveHandlers: Record<string, (state: VmState) => void> = {
   }
 };
 
-type Program = Expr[];
+interface Program {
+  mainCode: Expr[];
+}
 
-const example1: Program = [
-  constExpr(3),
-  constExpr(4),
-  constExpr(5),
-  call('+'),
-  call('+'),
-  constExpr(12),
-  call('=='),
-  block(
-    constExpr(1)
-  ),
-  call('if-true'),
-];
+const example1: Program = {
+  mainCode: [
+    constExpr(3),
+    constExpr(4),
+    constExpr(5),
+    call('+'),
+    call('+'),
+    constExpr(12),
+    call('=='),
+    block(
+      constExpr(1)
+    ),
+    call('if-true'),
+  ]
+};
 
 // Returns false if there are no further steps to be made
 function stepProgram(state: VmState): boolean {

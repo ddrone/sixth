@@ -67,10 +67,7 @@ export function pushFnPointer(state: VmState, blockId: number) {
   pushValue(state, { kind: 'fnPointer', blockId, instrId: 0 });
 }
 
-export function callPointer(state: VmState, pointer: FnPointerValue) {
+export function callPointer(state: VmState, pointer: CodePointer) {
   state.flowStack.push(state.ip);
-  state.ip = {
-    blockId: pointer.blockId,
-    instrId: pointer.instrId
-  }
+  state.ip = Object.assign({}, pointer);
 }

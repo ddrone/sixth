@@ -1,7 +1,7 @@
 import { initState } from "./compiler.ts";
 import { Program } from "./expr.ts";
 import { primitiveHandlers } from "./primitives.ts";
-import { VmState, pushNumber, pushFnPointer, pushBoolean, SixthError } from "./vm_state.ts";
+import { VmState, pushNumber, pushFnPointer, pushBoolean, SixthError, callPointer } from "./vm_state.ts";
 
 // Returns false if there are no further steps to be made
 function stepProgram(state: VmState): boolean {
@@ -31,6 +31,10 @@ function stepProgram(state: VmState): boolean {
     }
     case 'fnPointer': {
       pushFnPointer(state, instr.value);
+      break;
+    }
+    case 'callFnPointer': {
+      callPointer(state, { blockId: instr.value, instrId: 0 });
       break;
     }
     case 'constBool': {

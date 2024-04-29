@@ -5,4 +5,9 @@ export interface FnPointerInstr {
   value: number;
 }
 
-export type Instr = ConstExpr | CallExpr | FnPointerInstr | ConstBoolExpr;
+export interface CallPointerInstr {
+  kind: 'callFnPointer';
+  value: number;
+}
+
+export type Instr = ConstExpr | CallExpr | FnPointerInstr | ConstBoolExpr | CallPointerInstr;

@@ -1,5 +1,5 @@
 import { Expr, Program } from "./expr.ts";
-import { FnPointerInstr, Instr } from "./instr.ts";
+import { CallPointerInstr, Instr } from "./instr.ts";
 import { primitiveHandlers } from "./primitives.ts";
 import { VmState } from "./vm_state.ts";
 
@@ -13,7 +13,7 @@ export class Compiler {
   code: Instr[][] = [];
   nextBlock: number = 0;
   program: Program;
-  unresolvedReferences: Map<string, FnPointerInstr[]> = new Map();
+  unresolvedReferences: Map<string, CallPointerInstr[]> = new Map();
 
   constructor(program: Program) {
     this.program = program;
@@ -53,10 +53,10 @@ export class Compiler {
     return result;
   }
 
-  saveRef(funName: string, instr: FnPointerInstr) {
+  saveRef(funName: string, instr: CallPointerInstr) {
     const arr = this.unresolvedReferences.get(funName);
     if (arr === undefined) {
-      this.unresolvedReferences.set(funName, []);
+      this.unresolvedReferences.set(funName, [instr]);
     }
     else {
       arr.push(instr);
@@ -72,8 +72,8 @@ export class Compiler {
           return expr;
         }
         else if (expr.name in this.program.functions) {
-          const result: FnPointerInstr = {
-            kind: 'fnPointer',
+          const result: CallPointerInstr = {
+            kind: 'callFnPointer',
             value: -1
           };
           this.saveRef(expr.name, result);

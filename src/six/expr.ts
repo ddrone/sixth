@@ -41,6 +41,9 @@ export function block(...expr: Expr[]): Expr {
   }
 }
 
+export type FunDefs = Record<string, Expr[]>;
+
 export interface Program {
+  functions: FunDefs;
   mainCode: Expr[];
 }

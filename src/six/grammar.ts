@@ -2,6 +2,7 @@ import { evalEmpty } from "./evaluator.ts";
 import { Program, constExpr, call, block } from "./expr.ts";
 
 const example1: Program = {
+  functions: {},
   mainCode: [
     constExpr(3),
     constExpr(4),

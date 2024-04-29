@@ -1,10 +1,45 @@
 import { Expr, Program } from "./expr.ts";
-import { Instr } from "./instr.ts";
+import { FnPointerInstr, Instr } from "./instr.ts";
+import { primitiveHandlers } from "./primitives.ts";
 import { VmState } from "./vm_state.ts";
+
+export class CompileError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
 
 export class Compiler {
   code: Instr[][] = [];
   nextBlock: number = 0;
+  program: Program;
+  unresolvedReferences: Map<string, FnPointerInstr[]> = new Map();
+
+  constructor(program: Program) {
+    this.program = program;
+  }
+
+  compileAll(): number {
+    const funRefs = new Map<string, number>();
+    for (const [funName, code] of Object.entries(this.program.functions)) {
+      funRefs.set(funName, this.compileToNewBlock(code));
+    }
+
+    const result = this.compileToNewBlock(this.program.mainCode);
+
+    for (const [funName, refs] of this.unresolvedReferences.entries()) {
+      const refValue = funRefs.get(funName);
+      if (refValue === undefined) {
+        throw new Error(`Compiler internal error: not found reference value for ${funName}`);
+      }
+
+      for (const ref of refs) {
+        ref.value = refValue;
+      }
+    }
+
+    return result;
+  }
 
   compileToNewBlock(exprs: Expr[]): number {
     const result = this.nextBlock++;
@@ -18,12 +53,36 @@ export class Compiler {
     return result;
   }
 
+  saveRef(funName: string, instr: FnPointerInstr) {
+    const arr = this.unresolvedReferences.get(funName);
+    if (arr === undefined) {
+      this.unresolvedReferences.set(funName, []);
+    }
+    else {
+      arr.push(instr);
+    }
+  }
+
   compileExpr(expr: Expr): Instr {
     switch (expr.kind) {
       case 'const':
         return expr;
-      case 'call':
-        return expr;
+      case 'call': {
+        if (expr.name in primitiveHandlers) {
+          return expr;
+        }
+        else if (expr.name in this.program.functions) {
+          const result: FnPointerInstr = {
+            kind: 'fnPointer',
+            value: -1
+          };
+          this.saveRef(expr.name, result);
+          return result;
+        }
+        else {
+          throw new CompileError(`Unresolved reference to function ${expr.name}!`);
+        }
+      }
       case 'constBool':
         return expr;
       case 'block': {
@@ -38,8 +97,8 @@ export class Compiler {
 }
 
 export function initState(program: Program): VmState {
-  const compiler = new Compiler();
-  const startBlock = compiler.compileToNewBlock(program.mainCode);
+  const compiler = new Compiler(program);
+  const startBlock = compiler.compileAll();
   return {
     code: compiler.code,
     dataStack: [],

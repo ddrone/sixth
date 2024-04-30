@@ -24,6 +24,10 @@ export const primitiveHandlers: Record<string, (state: VmState) => void> = {
     const cond = popBoolean(state);
     callPointer(state, cond ? fnPointerTrue : fnPointerFalse);
   },
+  'call'(state) {
+    const fnPointer = popFnPointer(state);
+    callPointer(state, fnPointer);
+  },
   '<='(state) {
     const x = popNumber(state);
     const y = popNumber(state);

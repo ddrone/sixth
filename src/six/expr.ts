@@ -13,12 +13,17 @@ export interface CallExpr {
   name: string;
 }
 
+export interface FunRefExpr {
+  kind: 'funRef';
+  name: string;
+}
+
 export interface BlockExpr {
   kind: 'block';
   contents: Expr[];
 }
 
-export type Expr = ConstExpr | CallExpr | BlockExpr | ConstBoolExpr;
+export type Expr = ConstExpr | CallExpr | BlockExpr | ConstBoolExpr | FunRefExpr;
 
 export function constExpr(n: number): Expr {
   return {
@@ -38,6 +43,13 @@ export function block(...expr: Expr[]): Expr {
   return {
     kind: 'block',
     contents: expr
+  }
+}
+
+export function funRef(name: string): Expr {
+  return {
+    kind: 'funRef',
+    name
   }
 }
 

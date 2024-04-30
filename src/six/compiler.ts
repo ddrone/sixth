@@ -1,5 +1,5 @@
 import { Expr, Program } from "./expr.ts";
-import { CallPointerInstr, Instr } from "./instr.ts";
+import { CallPointerInstr, FnPointerInstr, Instr } from "./instr.ts";
 import { primitiveHandlers } from "./primitives.ts";
 import { VmState } from "./vm_state.ts";
 
@@ -13,7 +13,7 @@ export class Compiler {
   code: Instr[][] = [];
   nextBlock: number = 0;
   program: Program;
-  unresolvedReferences: Map<string, CallPointerInstr[]> = new Map();
+  unresolvedReferences: Map<string, (FnPointerInstr | CallPointerInstr)[]> = new Map();
 
   constructor(program: Program) {
     this.program = program;
@@ -53,7 +53,7 @@ export class Compiler {
     return result;
   }
 
-  saveRef(funName: string, instr: CallPointerInstr) {
+  saveRef(funName: string, instr: FnPointerInstr | CallPointerInstr) {
     const arr = this.unresolvedReferences.get(funName);
     if (arr === undefined) {
       this.unresolvedReferences.set(funName, [instr]);
@@ -85,6 +85,17 @@ export class Compiler {
       }
       case 'constBool':
         return expr;
+      case 'funRef': {
+        if (!(expr.name in this.program.functions)) {
+          throw new CompileError(`Unresolved reference to function ${expr.name}!`);
+        }
+        const result: FnPointerInstr = {
+          kind: 'fnPointer',
+          value: -1
+        }
+        this.saveRef(expr.name, result);
+        return result;
+      }
       case 'block': {
         const blockId = this.compileToNewBlock(expr.contents);
         return {

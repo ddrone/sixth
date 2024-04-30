@@ -1,5 +1,5 @@
 import { evalEmpty } from "./evaluator.ts";
-import { Program, constExpr, call, block } from "./expr.ts";
+import { Program, constExpr, call, funRef } from "./expr.ts";
 
 const example1: Program = {
   functions: {
@@ -8,11 +8,12 @@ const example1: Program = {
       constExpr(0), // n n 0
       call('<='), // n (0 <= n)
       call('not'), // n !(0 <= n)
-      block(
-        constExpr(0),
-        call('-')
-      ),
+      funRef('inv'),
       call('if-true'),
+    ],
+    "inv": [
+      constExpr(0),
+      call('-')
     ]
   },
   mainCode: [

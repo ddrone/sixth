@@ -16,10 +16,10 @@ const example1: Program = {
       call('-')
     ],
     "do-while": [
-      call('dup'),
-      call('call'),
+      call('dup'), // body body
+      call('call'), // body finished
       block(
-        call('do-while'),
+        call('do-while')
       ),
       block(
         call('drop')
@@ -27,28 +27,28 @@ const example1: Program = {
       call('if')
     ],
     "sum": [
-      constExpr(0), // n sum
+      constExpr(0), // n 0
       block(
-        call('dup-2nd'),
-        constExpr(0),
-        call('=='),
+        call('dup-2nd'), // n sum n
+        constExpr(0), // n sum n 0
+        call('=='), // n sum (n == 0)
         block(
-          call('dup-2nd'),
-          call('+'),
-          call('swap'),
-          constExpr(1),
-          call('swap'),
-          call('-'),
-          call('swap'),
-          constBool(true),
+          call('dup-2nd'), // n sum n
+          call('+'), // n (sum + n)
+          call('swap'), // (sum + n) n
+          constExpr(1), // (sum + n) n 1
+          call('swap'), // (sum + n) 1 n
+          call('-'), // (sum + n) (n - 1)
+          call('swap'), // (n - 1) (sum + n)
+          constBool(true), // (n - 1) (sum + n) true
         ),
         block(
-          constBool(false),
+          constBool(false), // n sum false
         )
-      ),
-      call('do-while'),
-      call('swap'),
-      call('drop'),
+      ), // n 0 loop-fun
+      call('do-while'), // 0 sum
+      call('swap'), // sum 0
+      call('drop'), // sum
     ]
   },
   mainCode: [

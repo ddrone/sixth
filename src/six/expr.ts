@@ -32,6 +32,13 @@ export function constExpr(n: number): Expr {
   }
 }
 
+export function constBool(b: boolean): Expr {
+  return {
+    kind: 'constBool',
+    value: b
+  }
+}
+
 export function call(name: string): Expr {
   return {
     kind: 'call',

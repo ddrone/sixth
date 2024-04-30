@@ -49,8 +49,18 @@ export const primitiveHandlers: Record<string, (state: VmState) => void> = {
     pushValue(state, x);
     pushValue(state, x);
   },
+  'dup-2nd'(state) {
+    const x = popValue(state);
+    const y = popValue(state);
+    pushValue(state, y);
+    pushValue(state, x);
+    pushValue(state, y);
+  },
   'not'(state) {
     const x = popBoolean(state);
     pushBoolean(state, !x);
+  },
+  'drop'(state) {
+    popValue(state);
   }
 };

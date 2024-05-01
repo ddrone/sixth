@@ -54,6 +54,15 @@ function evalLoop(state: VmState) {
 
 export function evalEmpty(program: Program): VmState {
   const state = initState(program);
-  evalLoop(state);
+  try {
+    evalLoop(state);
+  }
+  catch (e) {
+    if (e instanceof SixthError) {
+      console.log('Last state:');
+      console.log(state);
+    }
+    throw e;
+  }
   return state;
 }

@@ -1,15 +1,13 @@
-import { useState } from 'react'
+import { initState } from './six/compiler'
+import { example1 } from './six/grammar'
+import CodeRendener from './CodeRenderer';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const initialState = initState(example1);
 
   return (
     <>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+      <CodeRendener code={initialState.code} />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { evalEmpty } from "./evaluator.ts";
 import { Program, constExpr, call, funRef, block, constBool } from "./expr.ts";
 
-const example1: Program = {
+export const example1: Program = {
   functions: {
     "mod": [
       call('dup'), // n n
@@ -61,4 +61,8 @@ const example1: Program = {
   ]
 };
 
-console.log(evalEmpty(example1));
+export function runTest() {
+  console.log(evalEmpty(example1));
+}
+
+// runTest();

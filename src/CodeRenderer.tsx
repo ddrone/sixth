@@ -87,7 +87,7 @@ function CodeLineRenderer(attrs: CodeLineRendererAttrs) {
     case 'const':
       return <li>const {attrs.code.value}</li>
     case 'constBool':
-      return <li>const {attrs.code.value}</li>
+      return <li>const {`${attrs.code.value}`}</li>
     case 'call':
       return <li>call <span className="prim-function">{attrs.code.name}</span></li>
     case 'fnPointer':

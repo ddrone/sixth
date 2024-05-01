@@ -5,3 +5,8 @@
 .highlight-passive {
   background-color: #eeeeee;
 }
+
+.prim-function {
+  color: #003300;
+  font-weight: bold;
+}

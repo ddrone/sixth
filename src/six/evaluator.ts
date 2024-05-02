@@ -4,7 +4,7 @@ import { primitiveHandlers } from "./primitives.ts";
 import { VmState, pushNumber, pushFnPointer, pushBoolean, SixthError, callPointer } from "./vm_state.ts";
 
 // Returns false if there are no further steps to be made
-function stepProgram(state: VmState): boolean {
+export function stepProgram(state: VmState): boolean {
   const currBlock = state.code[state.ip.blockId];
   if (state.ip.instrId >= currBlock.length) {
     const newIp = state.flowStack.pop();

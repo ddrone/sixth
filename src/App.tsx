@@ -22,8 +22,8 @@ function App() {
   return (
     <>
       {error !== undefined && <span className='error'>{error}</span>}
-      <DataStackRenderer stack={state.dataStack} />
-      <FlowStackRenderer flowStack={state.flowStack} ip={state.ip} />
+      <DataStackRenderer stack={[...state.dataStack]} />
+      <FlowStackRenderer flowStack={[...state.flowStack]} ip={{...state.ip}} />
       <CodeRendener code={state.code} />
     </>
   )

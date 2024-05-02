@@ -46,7 +46,7 @@ function stepProgram(state: VmState): boolean {
   return true;
 }
 
-function evalLoop(state: VmState) {
+export function evalLoop(state: VmState) {
   while (stepProgram(state)) {
     // Do nothing extra
   }

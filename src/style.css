@@ -10,3 +10,11 @@
   color: #003300;
   font-weight: bold;
 }
+
+.error {
+  color: red;
+}
+
+.stack td {
+  border: 1px solid black;
+}

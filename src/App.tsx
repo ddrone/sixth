@@ -1,13 +1,28 @@
 import { initState } from './six/compiler'
 import { example1 } from './six/grammar'
 import CodeRendener from './CodeRenderer';
+import { evalLoop } from './six/evaluator';
+import { SixthError } from './six/vm_state';
+import DataStackRenderer from './DataStackRenderer';
 
 function App() {
-  const initialState = initState(example1);
+  const state = initState(example1);
+  let error: string | undefined;
+
+  try {
+    evalLoop(state);
+  }
+  catch (e) {
+    if (e instanceof SixthError) {
+      error = e.message;
+    }
+  }
 
   return (
     <>
-      <CodeRendener code={initialState.code} />
+      {error !== undefined && <span className='error'>{error}</span>}
+      <DataStackRenderer stack={state.dataStack} />
+      <CodeRendener code={state.code} />
     </>
   )
 }

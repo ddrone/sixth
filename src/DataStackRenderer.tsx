@@ -25,16 +25,18 @@ interface DataStackRendererAttrs {
 
 function DataStackRenderer(attrs: DataStackRendererAttrs) {
   return (
-    <table className='stack'>
-      <tr>
-        <th>Stack</th>
-      </tr>
-      {attrs.stack.map(val => <tr>
-        <td>
-          <ValueRenderer value={val} />
-        </td>
-      </tr>)}
-    </table>
+    <div>
+      <table className='stack'>
+        <tr>
+          <th>Stack</th>
+        </tr>
+        {attrs.stack.map(val => <tr>
+          <td>
+            <ValueRenderer value={val} />
+          </td>
+        </tr>)}
+      </table>
+    </div>
   );
 }
 

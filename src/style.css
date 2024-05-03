@@ -18,3 +18,7 @@
 .stack td {
   border: 1px solid black;
 }
+
+.horizontal {
+  display: flex;
+}

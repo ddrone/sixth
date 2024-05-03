@@ -19,13 +19,15 @@ interface FlowStackRendererAttrs {
 
 function FlowStackRenderer(attrs: FlowStackRendererAttrs) {
   return (
-    <table className='stack'>
-      <tr>
-        <th>Flow stack</th>
-      </tr>
-      {attrs.flowStack.map(cp => <CodePointerRow codePointer={cp} />)}
-      <CodePointerRow codePointer={attrs.ip} />
-    </table>
+    <div>
+      <table className='stack'>
+        <tr>
+          <th>Flow stack</th>
+        </tr>
+        {attrs.flowStack.map(cp => <CodePointerRow codePointer={cp} />)}
+        <CodePointerRow codePointer={attrs.ip} />
+      </table>
+    </div>
   )
 }
 

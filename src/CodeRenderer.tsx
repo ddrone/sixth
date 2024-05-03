@@ -19,12 +19,14 @@ function CodeRendener(attrs: CodeRendenerAttrs) {
   const [currId, setCurrId] = useState<number | undefined>();
 
   return (
-    <HighlightContext.Provider value={{
-      currId,
-      setHighlight: setCurrId
-    }}>
-      {attrs.code.map((code, blockId) => <CodeBlockRenderer code={code} blockId={blockId} />)}
-    </HighlightContext.Provider>
+    <div>
+      <HighlightContext.Provider value={{
+        currId,
+        setHighlight: setCurrId
+      }}>
+        {attrs.code.map((code, blockId) => <CodeBlockRenderer code={code} blockId={blockId} />)}
+      </HighlightContext.Provider>
+    </div>
   )
 }
 

@@ -29,16 +29,18 @@ function App() {
   }
 
   return (
-    <>
-      {!finished && <>
-        <button onClick={handleStepClick}>Step</button>
-        <br />
-      </>}
-      {error !== undefined && <span className='error'>{error}</span>}
-      <DataStackRenderer stack={[...state.current.dataStack]} />
-      <FlowStackRenderer flowStack={[...state.current.flowStack]} ip={{...state.current.ip}} />
+    <div className='horizontal'>
       <CodeRendener code={state.current.code} />
-    </>
+      <FlowStackRenderer flowStack={[...state.current.flowStack]} ip={{...state.current.ip}} />
+      <DataStackRenderer stack={[...state.current.dataStack]} />
+      <div>
+        {!finished && <>
+          <button onClick={handleStepClick}>Step</button>
+          <br />
+        </>}
+        {error !== undefined && <span className='error'>{error}</span>}
+      </div>
+    </div>
   )
 }
 

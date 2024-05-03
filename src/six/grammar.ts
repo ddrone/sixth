@@ -1,7 +1,7 @@
 import { evalEmpty } from "./evaluator.ts";
 import { Program, constExpr, call, funRef, block, constBool } from "./expr.ts";
 
-export const example1: Program = {
+export const example2: Program = {
   functions: {
     "mod": [
       call('dup'), // n n
@@ -14,7 +14,18 @@ export const example1: Program = {
     "inv": [
       constExpr(0),
       call('-')
-    ],
+    ]
+  },
+  mainCode: [
+    constExpr(-10),
+    call('mod'),
+    constExpr(15),
+    call('mod')
+  ]
+}
+
+export const example1: Program = {
+  functions: {
     "do-while": [
       call('dup'), // body body
       call('call'), // body finished
@@ -52,10 +63,6 @@ export const example1: Program = {
     ]
   },
   mainCode: [
-    constExpr(-10),
-    call('mod'),
-    constExpr(15),
-    call('mod'),
     constExpr(10),
     call('sum'),
   ]

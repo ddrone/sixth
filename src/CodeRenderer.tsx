@@ -98,7 +98,7 @@ function CodeLineRenderer(attrs: CodeLineRendererAttrs) {
       </HighlightLi>
     case 'callFnPointer':
       return <HighlightLi highlightId={attrs.code.value}>
-        pointer {attrs.code.value}
+        call block {attrs.code.value}
       </HighlightLi>
   }
 }

@@ -24,6 +24,7 @@ export const example2: Program = {
   ]
 }
 
+// This program does not work correctly at the moment, see the comments inline.
 export const example1: Program = {
   functions: {
     "do-while": [
@@ -43,6 +44,10 @@ export const example1: Program = {
         call('dup-2nd'), // n sum n
         constExpr(0), // n sum n 0
         call('=='), // n sum (n == 0)
+        // The problem with this program right now is that the assumptions made in the block do not hold,
+        // because there is also a function pointer that is on the stack in order for 'do-while' to actually work.
+        // So far it looks like this set of primitives seems to be somewhat inconvenient to actually write
+        // programs?
         block(
           call('dup-2nd'), // n sum n
           call('+'), // n (sum + n)

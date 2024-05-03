@@ -6,6 +6,10 @@
   background-color: #eeeeee;
 }
 
+.highlight-running {
+  background-color: #ffcccc;
+}
+
 .prim-function {
   color: #003300;
   font-weight: bold;
@@ -21,4 +25,12 @@
 
 .horizontal {
   display: flex;
+}
+
+.block {
+  border: 1px solid transparent;
+}
+
+.block-active {
+  border-color: black;
 }

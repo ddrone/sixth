@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Instr } from "./six/instr";
+import { CodePointer } from "./six/vm_state";
 
 interface HighlightContextType {
   currId?: number;
@@ -13,6 +14,7 @@ const HighlightContext = createContext<HighlightContextType>({
 
 interface CodeRendenerAttrs {
   code: Instr[][];
+  ip: CodePointer;
 }
 
 function CodeRendener(attrs: CodeRendenerAttrs) {
@@ -24,7 +26,12 @@ function CodeRendener(attrs: CodeRendenerAttrs) {
         currId,
         setHighlight: setCurrId
       }}>
-        {attrs.code.map((code, blockId) => <CodeBlockRenderer code={code} blockId={blockId} />)}
+        {attrs.code.map((code, blockId) =>
+          <CodeBlockRenderer
+            code={code}
+            blockId={blockId}
+            activeLine={attrs.ip.blockId === blockId ? attrs.ip.instrId : undefined}
+          />)}
       </HighlightContext.Provider>
     </div>
   )
@@ -33,14 +40,17 @@ function CodeRendener(attrs: CodeRendenerAttrs) {
 interface BlockRendererAttrs {
   blockId: number;
   code: Instr[];
+  activeLine?: number;
 }
 
 function CodeBlockRenderer(attrs: BlockRendererAttrs) {
+  const className = attrs.activeLine === undefined ? 'block' : 'block block-active';
+
   return (
-    <div>
+    <div className={className}>
       <h2>Block {attrs.blockId}</h2>
       <ul>
-        {attrs.code.map(instr => <CodeLineRenderer code={instr} />)}
+        {attrs.code.map((instr, index) => <CodeLineRenderer code={instr} isActive={attrs.activeLine === index} />)}
       </ul>
     </div>
   )
@@ -49,6 +59,7 @@ function CodeBlockRenderer(attrs: BlockRendererAttrs) {
 interface HighlightLiAttrs {
   highlightId: number;
   children: ReactNode;
+  classOverride?: string;
 }
 
 function HighlightLi(attrs: HighlightLiAttrs) {
@@ -56,7 +67,10 @@ function HighlightLi(attrs: HighlightLiAttrs) {
   const [isActive, setIsActive] = useState(false);
 
   let className = '';
-  if (isActive) {
+  if (attrs.classOverride !== undefined) {
+    className = attrs.classOverride;
+  }
+  else if (isActive) {
     className = 'highlight-active';
   }
   else if (context.currId === attrs.highlightId) {
@@ -82,22 +96,25 @@ function HighlightLi(attrs: HighlightLiAttrs) {
 
 interface CodeLineRendererAttrs {
   code: Instr;
+  isActive: boolean;
 }
 
 function CodeLineRenderer(attrs: CodeLineRendererAttrs) {
+  const className = attrs.isActive ? 'highlight-running' : undefined;
+
   switch (attrs.code.kind) {
     case 'const':
-      return <li>const {attrs.code.value}</li>
+      return <li className={className}>const {attrs.code.value}</li>
     case 'constBool':
-      return <li>const {`${attrs.code.value}`}</li>
+      return <li className={className}>const {`${attrs.code.value}`}</li>
     case 'call':
-      return <li>call <span className="prim-function">{attrs.code.name}</span></li>
+      return <li className={className}>call <span className="prim-function">{attrs.code.name}</span></li>
     case 'fnPointer':
-      return <HighlightLi highlightId={attrs.code.value}>
+      return <HighlightLi highlightId={attrs.code.value} classOverride={className}>
         pointer {attrs.code.value}
       </HighlightLi>
     case 'callFnPointer':
-      return <HighlightLi highlightId={attrs.code.value}>
+      return <HighlightLi highlightId={attrs.code.value} classOverride={className}>
         call block {attrs.code.value}
       </HighlightLi>
   }

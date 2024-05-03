@@ -30,7 +30,7 @@ function App() {
 
   return (
     <div className='horizontal'>
-      <CodeRendener code={state.current.code} />
+      <CodeRendener code={state.current.code} ip={{...state.current.ip}} />
       <FlowStackRenderer flowStack={[...state.current.flowStack]} ip={{...state.current.ip}} />
       <DataStackRenderer stack={[...state.current.dataStack]} />
       <div>

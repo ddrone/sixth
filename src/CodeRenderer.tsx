@@ -1,16 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { useContext, useState, ReactNode } from "react";
 import { Instr } from "./six/instr";
 import { CodePointer } from "./six/vm_state";
-
-interface HighlightContextType {
-  currId?: number;
-  setHighlight: (newId?: number) => void;
-}
-
-const HighlightContext = createContext<HighlightContextType>({
-  setHighlight() {
-  }
-});
+import { HighlightContext } from "./highlight_context";
 
 interface CodeRendenerAttrs {
   code: Instr[][];

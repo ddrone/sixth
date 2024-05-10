@@ -1,30 +1,25 @@
-# React + TypeScript + Vite
+# ＳＩＸＴＨ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+A simple stack-based half-assed programming language sketch based on an idea I had while being half awake. The rough idea is as follows: in a program, there are commands (that directly operate on the stack) and blocks, that during compilation extracted to separate sequences of instructions and push the instruction pointer of that sequence to the stack at run-time. Then, you can have builtin operations that take these instruction pointers in order to implement control structures.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+I'm not sure whether I've learned anything, other than that I have no idea how stack-based programming languages actually work. I did manage to implement `while` as a user-space construct based on builtin `if` and recursion, but it turned out to be inconvenient to write programs with.
 
-## Expanding the ESLint configuration
+The other thing that I've learned is that I should probably look into established stack-based programming languages and try to writing some code in them first before trying to implement one myself.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Running
 
-- Configure the top-level `parserOptions` property like this:
+First you'll need to grab the dependencies via
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Then you can run a development server
+
+```
+npm run dev
+```
+
+There's no need for a development server, really, the whole thing is just static JS app not requiring any server support. One day I will host an instance of this thing online, maybe.

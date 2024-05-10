@@ -1,8 +1,9 @@
 import { createContext } from "react";
 
 interface HighlightContextType {
-  currId?: number;
-  setHighlight: (newId?: number) => void;
+  currBlockId?: number;
+  currLineId?: number;
+  setHighlight: (newBlockId?: number, newLineId?: number) => void;
 }
 
 export const HighlightContext = createContext<HighlightContextType>({

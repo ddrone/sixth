@@ -2,6 +2,7 @@ import { useContext, useState, ReactNode } from "react";
 import { Instr } from "./six/instr";
 import { CodePointer } from "./six/vm_state";
 import { HighlightContext } from "./highlight_context";
+import HighlightContextWrapper from "./HighlightContextWrapper";
 
 interface CodeRendenerAttrs {
   code: Instr[][];
@@ -9,21 +10,16 @@ interface CodeRendenerAttrs {
 }
 
 function CodeRendener(attrs: CodeRendenerAttrs) {
-  const [currId, setCurrId] = useState<number | undefined>();
-
   return (
     <div>
-      <HighlightContext.Provider value={{
-        currId,
-        setHighlight: setCurrId
-      }}>
+      <HighlightContextWrapper>
         {attrs.code.map((code, blockId) =>
           <CodeBlockRenderer
             code={code}
             blockId={blockId}
             activeLine={attrs.ip.blockId === blockId ? attrs.ip.instrId : undefined}
           />)}
-      </HighlightContext.Provider>
+      </HighlightContextWrapper>
     </div>
   )
 }
@@ -41,7 +37,7 @@ function CodeBlockRenderer(attrs: BlockRendererAttrs) {
   if (attrs.activeLine !== undefined) {
     className = `${className} block-active`;
   }
-  if (context.currId === attrs.blockId) {
+  if (context.currBlockId === attrs.blockId) {
     className = `${className} block-highlight`;
   }
 
@@ -72,7 +68,7 @@ function HighlightLi(attrs: HighlightLiAttrs) {
   else if (isActive) {
     className = 'highlight-active';
   }
-  else if (context.currId === attrs.highlightId) {
+  else if (context.currBlockId === attrs.highlightId) {
     className = 'highlight-passive';
   }
 

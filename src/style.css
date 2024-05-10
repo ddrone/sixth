@@ -39,3 +39,7 @@
 .block-active {
   border-color: black;
 }
+
+.block li {
+  border: 1px solid transparent;
+}

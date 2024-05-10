@@ -31,6 +31,11 @@
   border: 1px solid transparent;
 }
 
+.block-highlight {
+  border-color: grey;
+  background-color: #eeeeee;
+}
+
 .block-active {
   border-color: black;
 }

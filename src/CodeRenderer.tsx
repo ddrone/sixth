@@ -35,7 +35,15 @@ interface BlockRendererAttrs {
 }
 
 function CodeBlockRenderer(attrs: BlockRendererAttrs) {
-  const className = attrs.activeLine === undefined ? 'block' : 'block block-active';
+  const context = useContext(HighlightContext);
+
+  let className = 'block';
+  if (attrs.activeLine !== undefined) {
+    className = `${className} block-active`;
+  }
+  if (context.currId === attrs.blockId) {
+    className = `${className} block-highlight`;
+  }
 
   return (
     <div className={className}>

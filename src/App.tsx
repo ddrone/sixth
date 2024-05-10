@@ -6,6 +6,7 @@ import { SixthError } from './six/vm_state';
 import DataStackRenderer from './DataStackRenderer';
 import FlowStackRenderer from './FlowStackRenderer';
 import { useRef, useState } from 'react';
+import HighlightContextWrapper from './HighlightContextWrapper';
 
 function App() {
   const state = useRef(initState(example1));
@@ -29,18 +30,20 @@ function App() {
   }
 
   return (
-    <div className='horizontal'>
-      <CodeRendener code={state.current.code} ip={{...state.current.ip}} />
-      <FlowStackRenderer flowStack={[...state.current.flowStack]} ip={{...state.current.ip}} />
-      <DataStackRenderer stack={[...state.current.dataStack]} />
-      <div>
-        {!finished && <>
-          <button onClick={handleStepClick}>Step</button>
-          <br />
-        </>}
-        {error !== undefined && <span className='error'>{error}</span>}
+    <HighlightContextWrapper>
+      <div className='horizontal'>
+        <CodeRendener code={state.current.code} ip={{...state.current.ip}} />
+        <FlowStackRenderer flowStack={[...state.current.flowStack]} ip={{...state.current.ip}} />
+        <DataStackRenderer stack={[...state.current.dataStack]} />
+        <div>
+          {!finished && <>
+            <button onClick={handleStepClick}>Step</button>
+            <br />
+          </>}
+          {error !== undefined && <span className='error'>{error}</span>}
+        </div>
       </div>
-    </div>
+    </HighlightContextWrapper>
   )
 }
 

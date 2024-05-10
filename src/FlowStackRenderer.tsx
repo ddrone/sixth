@@ -1,12 +1,35 @@
+import { useContext, useState } from "react";
 import { CodePointer } from "./six/vm_state"
+import { HighlightContext } from "./highlight_context";
 
 interface CodePointerRowAttrs {
   codePointer: CodePointer;
 }
 
 function CodePointerRow(attrs: CodePointerRowAttrs) {
+  const context = useContext(HighlightContext);
+  const [isActive, setIsActive] = useState(false);
+
+  let className = '';
+  if (isActive) {
+    className = 'highlight-active';
+  }
+  else if (context.currBlockId === attrs.codePointer.blockId && context.currLineId === attrs.codePointer.instrId) {
+    className = 'highlight-passive';
+  }
+
+  function handleMouseEnter() {
+    setIsActive(true);
+    context.setHighlight(attrs.codePointer.blockId, attrs.codePointer.instrId);
+  }
+
+  function handleMouseLeave() {
+    setIsActive(false);
+    context.setHighlight();
+  }
+
   return (
-    <tr>
+    <tr className={className} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <td>pointer {attrs.codePointer.blockId}; {attrs.codePointer.instrId}</td>
     </tr>
   )

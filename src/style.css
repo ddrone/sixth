@@ -43,3 +43,7 @@
 .block li {
   border: 1px solid transparent;
 }
+
+.block li.highlight-border {
+  border-color: grey;
+}

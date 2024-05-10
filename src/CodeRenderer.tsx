@@ -2,7 +2,7 @@ import { useContext, useState, ReactNode } from "react";
 import { Instr } from "./six/instr";
 import { CodePointer } from "./six/vm_state";
 import { HighlightContext } from "./highlight_context";
-import HighlightContextWrapper from "./HighlightContextWrapper";
+import { catClasses } from "./shared/class_name";
 
 interface CodeRendenerAttrs {
   code: Instr[][];
@@ -12,14 +12,12 @@ interface CodeRendenerAttrs {
 function CodeRendener(attrs: CodeRendenerAttrs) {
   return (
     <div>
-      <HighlightContextWrapper>
-        {attrs.code.map((code, blockId) =>
-          <CodeBlockRenderer
-            code={code}
-            blockId={blockId}
-            activeLine={attrs.ip.blockId === blockId ? attrs.ip.instrId : undefined}
-          />)}
-      </HighlightContextWrapper>
+      {attrs.code.map((code, blockId) =>
+        <CodeBlockRenderer
+          code={code}
+          blockId={blockId}
+          activeLine={attrs.ip.blockId === blockId ? attrs.ip.instrId : undefined}
+        />)}
     </div>
   )
 }
@@ -45,7 +43,10 @@ function CodeBlockRenderer(attrs: BlockRendererAttrs) {
     <div className={className}>
       <h2>Block {attrs.blockId}</h2>
       <ul>
-        {attrs.code.map((instr, index) => <CodeLineRenderer code={instr} isActive={attrs.activeLine === index} />)}
+        {attrs.code.map((instr, index) => <CodeLineRenderer
+          code={instr}
+          isHighlighted={context.currBlockId === attrs.blockId && context.currLineId === index}
+          isActive={attrs.activeLine === index} />)}
       </ul>
     </div>
   )
@@ -92,10 +93,14 @@ function HighlightLi(attrs: HighlightLiAttrs) {
 interface CodeLineRendererAttrs {
   code: Instr;
   isActive: boolean;
+  isHighlighted: boolean;
 }
 
 function CodeLineRenderer(attrs: CodeLineRendererAttrs) {
-  const className = attrs.isActive ? 'highlight-running' : undefined;
+  let className = attrs.isActive ? 'highlight-running' : undefined;
+  if (attrs.isHighlighted) {
+    className = catClasses(className, 'highlight-border');
+  }
 
   switch (attrs.code.kind) {
     case 'const':
